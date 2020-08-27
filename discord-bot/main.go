@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 
 	"github.com/bwmarrin/discordgo"
@@ -72,18 +73,19 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
-	// var sleep_time = time.Duration(rand.Int31n(1000))
+	// my userid: 321028131982934017
 	switch m.Content {
-	case "ping":
-		// time.Sleep(sleep_time * time.Millisecond)
+	case "!ping":
 		s.ChannelMessageSend(m.ChannelID, "pong")
-
-	case "pong":
-		// time.Sleep(sleep_time * time.Millisecond)
+	case "!pong":
 		s.ChannelMessageSend(m.ChannelID, "ping")
-	}
+	case "!userid":
+		s.ChannelMessageSend(m.ChannelID, m.Author.ID)
 
-	// command tests:
-	// if strings.HasPrefix(m.content, "!")
+	default:
+		if strings.HasPrefix(m.Content, "!test") {
+			s.ChannelMessageSend(m.ChannelID, "test")
+		}
+	}
 
 }
