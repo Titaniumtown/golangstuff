@@ -73,17 +73,17 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 	// var sleep_time = time.Duration(rand.Int31n(1000))
-	if m.Content == "ping" {
+	switch m.Content {
+	case "ping":
 		// time.Sleep(sleep_time * time.Millisecond)
 		s.ChannelMessageSend(m.ChannelID, "pong")
-	}
 
-	if m.Content == "pong" {
+	case "pong":
 		// time.Sleep(sleep_time * time.Millisecond)
 		s.ChannelMessageSend(m.ChannelID, "ping")
 	}
 
 	// command tests:
-	// if strings.HasPrefix(m.content, "")
+	// if strings.HasPrefix(m.content, "!")
 
 }
