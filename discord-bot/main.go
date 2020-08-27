@@ -74,6 +74,8 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 	// my userid: 321028131982934017
+	var owner_id = "321028131982934017"
+
 	switch m.Content {
 	case "!ping":
 		s.ChannelMessageSend(m.ChannelID, "pong")
@@ -81,7 +83,12 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		s.ChannelMessageSend(m.ChannelID, "ping")
 	case "!userid":
 		s.ChannelMessageSend(m.ChannelID, m.Author.ID)
-
+	case "!ownertest":
+		if m.Author.ID == owner_id {
+			s.ChannelMessageSend(m.ChannelID, "you own the bot")
+		} else {
+			s.ChannelMessageSend(m.ChannelID, "you don't own the bot")
+		}
 	default:
 		if strings.HasPrefix(m.Content, "!test") {
 			s.ChannelMessageSend(m.ChannelID, "test")
