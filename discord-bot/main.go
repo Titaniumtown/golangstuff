@@ -1,8 +1,9 @@
 package main
 
 import (
-	"flag"
 	"fmt"
+	"io/ioutil"
+	"log"
 	"math/rand"
 	"os"
 	"os/signal"
@@ -16,13 +17,33 @@ var (
 	Token string
 )
 
-func init() {
+// func init() {
 
-	flag.StringVar(&Token, "t", "", "Bot Token")
-	flag.Parse()
+// 	flag.StringVar(&Token, "t", "", "Bot Token")
+// 	flag.Parse()
+// }
+
+func fileExists(filename string) bool {
+	info, err := os.Stat(filename)
+	if os.IsNotExist(err) {
+		return false
+	}
+	return !info.IsDir()
 }
 
 func main() {
+	var token_file = "token.txt"
+	if !(fileExists(token_file)) {
+		fmt.Println("token file:", token_file, "was not found, so the file was created, please put your bot token there")
+		emptyFile, err := os.Create(token_file)
+		if err != nil {
+			log.Fatal(err)
+		}
+		emptyFile.Close()
+		os.Exit(1)
+	}
+	content, err := ioutil.ReadFile(token_file)
+	Token := string(content)
 
 	dg, err := discordgo.New("Bot " + Token)
 	if err != nil {
