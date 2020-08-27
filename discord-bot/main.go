@@ -4,11 +4,9 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"math/rand"
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -16,12 +14,6 @@ import (
 var (
 	Token string
 )
-
-// func init() {
-
-// 	flag.StringVar(&Token, "t", "", "Bot Token")
-// 	flag.Parse()
-// }
 
 func fileExists(filename string) bool {
 	info, err := os.Stat(filename)
@@ -57,9 +49,15 @@ func main() {
 	err = dg.Open()
 	if err != nil {
 		fmt.Println("error opening connection,", err)
+		if string(err.Error()) == "websocket: close 4004: Authentication failed." {
+			fmt.Println("Make sure your Token is valid!")
+			fmt.Println("Token:", Token)
+		}
 		return
 	}
+
 	fmt.Println("Bot is now running.  Press CTRL-C to exit.")
+
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
 	<-sc
@@ -69,30 +67,23 @@ func main() {
 
 func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
-	// var respond_self = true
-	// if m.Content == "!respondself" {
-	// 	if respond_self == false {
-	// 		s.ChannelMessageSend(m.ChannelID, "ok, I'll respond to myself")
-	// 		respond_self = true
-	// 	} else if respond_self == true {
-	// 		s.ChannelMessageSend(m.ChannelID, "ok, I won't respond to myself")
-	// 		respond_self = false
-	// 	}
-	// }
-
+	// if message sender is the bot, ignore message
 	if m.Author.ID == s.State.User.ID {
 		return
 	}
 
-	var sleep_time = time.Duration(rand.Int31n(1000))
+	// var sleep_time = time.Duration(rand.Int31n(1000))
 	if m.Content == "ping" {
-		time.Sleep(sleep_time * time.Millisecond)
+		// time.Sleep(sleep_time * time.Millisecond)
 		s.ChannelMessageSend(m.ChannelID, "pong")
 	}
 
 	if m.Content == "pong" {
-		time.Sleep(sleep_time * time.Millisecond)
+		// time.Sleep(sleep_time * time.Millisecond)
 		s.ChannelMessageSend(m.ChannelID, "ping")
 	}
+
+	// command tests:
+	// if strings.HasPrefix(m.content, "")
 
 }
