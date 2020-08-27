@@ -79,10 +79,13 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	switch m.Content {
 	case "!ping":
 		s.ChannelMessageSend(m.ChannelID, "pong")
+
 	case "!pong":
 		s.ChannelMessageSend(m.ChannelID, "ping")
+
 	case "!userid":
 		s.ChannelMessageSend(m.ChannelID, m.Author.ID)
+
 	case "!ownertest":
 		if m.Author.ID == owner_id {
 			s.ChannelMessageSend(m.ChannelID, "you own the bot")
