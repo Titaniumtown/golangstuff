@@ -107,7 +107,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	case "!neofetch":
 		if m.Author.ID == owner_id {
 			// cmdstring := "/usr/bin/neofetch --stdout --color_blocks off"
-			cmdstring := "neofetch --color_blocks off | sed 's/\x1B[[0-9;?]*[a-zA-Z]//g'"
+			cmdstring := "/usr/bin/neofetch --color_blocks off | sed 's/\x1B[[0-9;?]*[a-zA-Z]//g'"
 
 			fmt.Println("running neofetch")
 			cmd := exec.Command("bash", "-c", cmdstring)
