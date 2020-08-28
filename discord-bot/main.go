@@ -138,6 +138,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			error_str := string(err.Error())
 			fmt.Println(error_str)
 			s.ChannelMessageSend(m.ChannelID, error_str)
+		}
 	default:
 		// test
 		if strings.HasPrefix(m.Content, "!test") {
