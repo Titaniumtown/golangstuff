@@ -9,6 +9,7 @@ import (
 	"os/signal"
 	"strings"
 	"syscall"
+
 	"github.com/rivo/uniseg"
 
 	"github.com/bwmarrin/discordgo"
@@ -176,7 +177,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				out, err := cmd.CombinedOutput()
 
 				if uniseg.GraphemeClusterCount(string(out)) > 2000 {
-					ChannelID, "sorry, the output of that command was over the 2000 character limit")
+					s.ChannelMessageSend(m.ChannelID, "Sorry, the output of that command is over the 2000 character limit set by discord")
 					return
 				}
 
