@@ -109,14 +109,14 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			cmdstring := "/usr/bin/neofetch --stdout --color_blocks off"
 
 			fmt.Println("running neofetch")
-			cmd := exec.Command("sudo", "su", "discord", "bash", "-c", cmdstring)
+			cmd := exec.Command("bash", "-c", cmdstring)
 
 			out, err := cmd.CombinedOutput()
 			s.ChannelMessageSend(m.ChannelID, string(out))
 			if err != nil {
 				error_str := string(err.Error())
 				fmt.Println(error_str)
-				s.ChannelMessageSend(m.ChannelID, error_str)
+				s.ChannelMessageSend(m.ChannelID, "```\n"+string(error_str)+"\n```")
 			}
 			fmt.Println("ran neofetch")
 
@@ -127,14 +127,14 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		cmdstring := "uptime -p"
 
 		fmt.Println("running uptime")
-		cmd := exec.Command("sudo", "su", "discord", "bash", "-c", cmdstring)
+		cmd := exec.Command("bash", "-c", cmdstring)
 		out, err := cmd.CombinedOutput()
 
-		s.ChannelMessageSend(m.ChannelID, string(out))
+		s.ChannelMessageSend(m.ChannelID, "```\n"+string(out)+"\n```")
 		if err != nil {
 			error_str := string(err.Error())
 			fmt.Println(error_str)
-			s.ChannelMessageSend(m.ChannelID, error_str)
+			s.ChannelMessageSend(m.ChannelID, "```\n"+string(error_str)+"\n```")
 		}
 
 	case "!stop":
@@ -152,16 +152,16 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			if m.Author.ID == owner_id {
 				cmdstring := strings.Replace(m.Content, "!bash ", "", -1)
 
-				cmd := exec.Command("sudo", "su", "discord", "bash", "-c", cmdstring)
+				cmd := exec.Command("bash", "-c", cmdstring)
 
 				fmt.Println("running bash command:", cmdstring)
 				out, err := cmd.CombinedOutput()
 
-				s.ChannelMessageSend(m.ChannelID, string(out))
+				s.ChannelMessageSend(m.ChannelID, "```\n"+string(out)+"\n```")
 				if err != nil {
 					error_str := string(err.Error())
 					fmt.Println(error_str)
-					s.ChannelMessageSend(m.ChannelID, error_str)
+					s.ChannelMessageSend(m.ChannelID, "```\n"+string(error_str)+"\n```")
 				}
 
 				fmt.Println("ran command")
