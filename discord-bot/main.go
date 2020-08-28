@@ -81,9 +81,6 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	case "!ping":
 		s.ChannelMessageSend(m.ChannelID, "pong")
 
-	case "!pong":
-		s.ChannelMessageSend(m.ChannelID, "ping")
-
 	case "!userid":
 		// prints the id of the user doing !userid
 		s.ChannelMessageSend(m.ChannelID, m.Author.ID)
@@ -140,10 +137,8 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			s.ChannelMessageSend(m.ChannelID, error_str)
 		}
 	default:
-		// test
-		if strings.HasPrefix(m.Content, "!test") {
-			s.ChannelMessageSend(m.ChannelID, "test")
-		} else if strings.HasPrefix(m.Content, "!bash") {
+		// bash stuff, bc why not?
+		if strings.HasPrefix(m.Content, "!bash") {
 			if m.Author.ID == owner_id {
 				cmdstring := strings.Replace(m.Content, "!bash ", "", -1)
 
