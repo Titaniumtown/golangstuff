@@ -106,7 +106,9 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	case "!website":
 		// links to my website
 		s.ChannelMessageSend(m.ChannelID, "<http://www.gardling.com>")
+
 	case "!neofetch":
+		// runs neofetch
 		if m.Author.ID == owner_id {
 			cmdstring := "/usr/bin/neofetch --stdout --color_blocks off | sed 's/\x1B[[0-9;?]*[a-zA-Z]//g' | sed '/^[[:space:]]*$/d'"
 
@@ -126,6 +128,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			s.ChannelMessageSend(m.ChannelID, "you have to be the owner to do that!")
 		}
 	case "!uptime":
+		// does uptime -p
 		cmdstring := "uptime -p | sed '/^[[:space:]]*$/d'"
 
 		fmt.Println("running uptime")
@@ -140,6 +143,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		}
 
 	case "!stop":
+		// kills the bot
 		if m.Author.ID == owner_id {
 
 			fmt.Println("shutting down bot")
@@ -149,9 +153,11 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			s.ChannelMessageSend(m.ChannelID, "you have to be the owner to shut down the bot!")
 		}
 	case "thx bot":
+		// takes complements
 		s.ChannelMessageSend(m.ChannelID, "np bro")
 
 	case "!temps":
+		// runs the temps command (my own shell script)
 		cmdstring := "temps"
 
 		fmt.Println("running temps")
@@ -166,10 +172,11 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		}
 
 	case "pog":
+		// responds to "pog" with "poggers1"
 		s.ChannelMessageSend(m.ChannelID, "poggers")
 
 	case "!crab":
-
+		// crab rave
 		s.ChannelMessageSend(m.ChannelID, ":crab: :crab: :crab: :crab: :crab: :crab: :crab:")
 		s.ChannelMessageSend(m.ChannelID, "https://www.youtube.com/watch?v=LDU_Txk06tM")
 
