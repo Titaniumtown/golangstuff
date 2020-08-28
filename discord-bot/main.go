@@ -250,24 +250,31 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	var owner_id = "321028131982934017"
 
 	if m.Author.ID == owner_id {
-		switch m.Content {
-
-		case "!neofetch":
-			neofetch(s, m)
-
-		case "!uptime":
-			uptime(s, m)
-
-		case "!stop":
-			stopbot(s, m)
-		default:
+		dmResult, err := ComesFromDM(s, m)
+		if err != nil {
+			s.ChannelMessageSend(m.ChannelID, "something went wrong")
+		}
+		if dmResult {
 			if strings.HasPrefix(m.Content, "!bash") {
 				bashRun(s, m)
-			} else {
+			}
+
+			switch m.Content {
+			case "!neofetch":
+				neofetch(s, m)
+
+			case "!uptime":
+				uptime(s, m)
+
+			case "!stop":
+				stopbot(s, m)
+
+			default:
 				noPermsCmd(s, m, owner_id)
 			}
+		} else {
+			noPermsCmd(s, m, owner_id)
 		}
-
 	} else {
 		noPermsCmd(s, m, owner_id)
 	}
