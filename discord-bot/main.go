@@ -94,6 +94,10 @@ func ownertest(s *discordgo.Session, m *discordgo.MessageCreate, owner_id string
 
 }
 
+func codesnippetprint(s *discordgo.Session, m *discordgo.MessageCreate, message string) {
+	s.ChannelMessageSend(m.ChannelID, "```\n"+message+"\n```")
+}
+
 func dmtest(s *discordgo.Session, m *discordgo.MessageCreate) {
 	dmResult, err := ComesFromDM(s, m)
 	if err != nil {
@@ -115,11 +119,11 @@ func neofetch(s *discordgo.Session, m *discordgo.MessageCreate) {
 	cmd := exec.Command("sudo", "su", "discord", "bash", "-c", cmdstring)
 
 	out, err := cmd.CombinedOutput()
-	s.ChannelMessageSend(m.ChannelID, "```\n"+string(out)+"\n```")
+	codesnippetprint(s, m, string(out))
 	if err != nil {
 		error_str := string(err.Error())
 		fmt.Println(error_str)
-		s.ChannelMessageSend(m.ChannelID, "```\n"+string(error_str)+"\n```")
+		codesnippetprint(s, m, error_str)
 	}
 	fmt.Println("ran neofetch")
 }
@@ -132,11 +136,11 @@ func uptime(s *discordgo.Session, m *discordgo.MessageCreate) {
 	cmd := exec.Command("bash", "-c", cmdstring)
 	out, err := cmd.CombinedOutput()
 
-	s.ChannelMessageSend(m.ChannelID, "```\n"+string(out)+"\n```")
+	codesnippetprint(s, m, string(out))
 	if err != nil {
 		error_str := string(err.Error())
 		fmt.Println(error_str)
-		s.ChannelMessageSend(m.ChannelID, "```\n"+string(error_str)+"\n```")
+		codesnippetprint(s, m, error_str)
 	}
 
 }
@@ -156,11 +160,11 @@ func temps(s *discordgo.Session, m *discordgo.MessageCreate) {
 	cmd := exec.Command("bash", "-c", cmdstring)
 	out, err := cmd.CombinedOutput()
 
-	s.ChannelMessageSend(m.ChannelID, "```\n"+string(out)+"\n```")
+	codesnippetprint(s, m, string(out))
 	if err != nil {
 		error_str := string(err.Error())
 		fmt.Println(error_str)
-		s.ChannelMessageSend(m.ChannelID, "```\n"+string(error_str)+"\n```")
+		codesnippetprint(s, m, error_str)
 	}
 }
 
@@ -178,11 +182,11 @@ func bashRun(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
-	s.ChannelMessageSend(m.ChannelID, "```\n"+string(out)+"\n```")
+	codesnippetprint(s, m, string(out))
 	if err != nil {
 		error_str := string(err.Error())
 		fmt.Println(error_str)
-		s.ChannelMessageSend(m.ChannelID, "```\n"+error_str+"\n```")
+		codesnippetprint(s, m, error_str)
 	}
 
 	fmt.Println("finished running command!")
