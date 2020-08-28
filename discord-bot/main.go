@@ -147,6 +147,9 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		} else {
 			s.ChannelMessageSend(m.ChannelID, "you have to be the owner to shut down the bot!")
 		}
+	case "thx bot":
+		s.ChannelMessageSend(m.ChannelID, "np bro")
+
 	default:
 		// bash stuff, bc why not?
 		if strings.HasPrefix(m.Content, "!bash") {
