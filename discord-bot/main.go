@@ -49,7 +49,10 @@ func main() {
 
 	dg.AddHandler(messageCreate)
 
-	dg.Identify.Intents = discordgo.MakeIntent(discordgo.IntentsGuildMessages)
+	// dg.Identify.Intents = discordgo.MakeIntent(discordgo.IntentsGuildMessages)
+
+	dg.Identify.Intents = discordgo.MakeIntent(discordgo.IntentsGuildMessages | discordgo.IntentsDirectMessages)
+
 	err = dg.Open()
 	if err != nil {
 		fmt.Println("error opening connection,", err)
@@ -67,6 +70,18 @@ func main() {
 	<-sc
 
 	dg.Close()
+}
+
+// from: https://github.com/bwmarrin/discordgo/wiki/FAQ#checking-if-a-message-is-a-direct-message-dm
+func ComesFromDM(s *discordgo.Session, m *discordgo.MessageCreate) (bool, error) {
+	channel, err := s.State.Channel(m.ChannelID)
+	if err != nil {
+		if channel, err = s.Channel(m.ChannelID); err != nil {
+			return false, err
+		}
+	}
+
+	return channel.Type == discordgo.ChannelTypeDM, nil
 }
 
 func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
@@ -93,6 +108,16 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			s.ChannelMessageSend(m.ChannelID, "you own the bot")
 		} else {
 			s.ChannelMessageSend(m.ChannelID, "you don't own the bot")
+		}
+	case "!dmtest":
+		dm_result, err := ComesFromDM(s, m)
+		if err != nil {
+			s.ChannelMessageSend(m.ChannelID, "something went wrong")
+		}
+		if dm_result {
+			s.ChannelMessageSend(m.ChannelID, "this is a dm")
+		} else {
+			s.ChannelMessageSend(m.ChannelID, "this isn't a dm")
 		}
 
 	case "!jebaited":
