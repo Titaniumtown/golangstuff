@@ -165,6 +165,9 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			s.ChannelMessageSend(m.ChannelID, "```\n"+string(error_str)+"\n```")
 		}
 
+	case "pog":
+		s.ChannelMessageSend(m.ChannelID, "poggers")
+
 	default:
 		// bash stuff, bc why not?
 		if strings.HasPrefix(m.Content, "!bash") {
