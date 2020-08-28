@@ -177,7 +177,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	case "!github":
 		// links to the github of the bot
-		s.ChannelMessageSend(m.ChannelID, "https://github.com/Titaniumtown/golangstuff/tree/master/discord-bot")
+		s.ChannelMessageSend(m.ChannelID, "<https://github.com/Titaniumtown/golangstuff/tree/master/discord-bot>")
 
 	case "!crab":
 		// crab rave
