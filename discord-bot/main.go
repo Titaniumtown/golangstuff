@@ -84,6 +84,110 @@ func ComesFromDM(s *discordgo.Session, m *discordgo.MessageCreate) (bool, error)
 	return channel.Type == discordgo.ChannelTypeDM, nil
 }
 
+// tests if the user is the owner by comparing the userid to owner_id
+func ownertest(s *discordgo.Session, m *discordgo.MessageCreate, owner_id string) {
+	if m.Author.ID == owner_id {
+		s.ChannelMessageSend(m.ChannelID, "you own the bot")
+	} else {
+		s.ChannelMessageSend(m.ChannelID, "you don't own the bot")
+	}
+
+}
+
+func dmtest(s *discordgo.Session, m *discordgo.MessageCreate) {
+	dm_result, err := ComesFromDM(s, m)
+	if err != nil {
+		s.ChannelMessageSend(m.ChannelID, "something went wrong")
+	}
+	if dm_result {
+		s.ChannelMessageSend(m.ChannelID, "this is a dm")
+	} else {
+		s.ChannelMessageSend(m.ChannelID, "this isn't a dm")
+	}
+
+}
+
+// runs neofetch
+func neofetch(s *discordgo.Session, m *discordgo.MessageCreate) {
+	cmdstring := "/usr/bin/neofetch --stdout --color_blocks off | sed 's/\x1B[[0-9;?]*[a-zA-Z]//g' | sed '/^[[:space:]]*$/d'"
+
+	fmt.Println("running neofetch")
+	cmd := exec.Command("sudo", "su", "discord", "bash", "-c", cmdstring)
+
+	out, err := cmd.CombinedOutput()
+	s.ChannelMessageSend(m.ChannelID, "```\n"+string(out)+"\n```")
+	if err != nil {
+		error_str := string(err.Error())
+		fmt.Println(error_str)
+		s.ChannelMessageSend(m.ChannelID, "```\n"+string(error_str)+"\n```")
+	}
+	fmt.Println("ran neofetch")
+}
+
+// does uptime -p
+func uptime(s *discordgo.Session, m *discordgo.MessageCreate) {
+	cmdstring := "uptime -p | sed '/^[[:space:]]*$/d'"
+
+	fmt.Println("running uptime")
+	cmd := exec.Command("bash", "-c", cmdstring)
+	out, err := cmd.CombinedOutput()
+
+	s.ChannelMessageSend(m.ChannelID, "```\n"+string(out)+"\n```")
+	if err != nil {
+		error_str := string(err.Error())
+		fmt.Println(error_str)
+		s.ChannelMessageSend(m.ChannelID, "```\n"+string(error_str)+"\n```")
+	}
+
+}
+
+// kills the bot
+func stopbot(s *discordgo.Session, m *discordgo.MessageCreate) {
+	fmt.Println("shutting down bot")
+	s.ChannelMessageSend(m.ChannelID, "shutting down bot!")
+	os.Exit(0)
+}
+
+func temps(s *discordgo.Session, m *discordgo.MessageCreate) {
+	// runs the temps command (my own shell script)
+	cmdstring := "temps"
+
+	fmt.Println("running temps")
+	cmd := exec.Command("bash", "-c", cmdstring)
+	out, err := cmd.CombinedOutput()
+
+	s.ChannelMessageSend(m.ChannelID, "```\n"+string(out)+"\n```")
+	if err != nil {
+		error_str := string(err.Error())
+		fmt.Println(error_str)
+		s.ChannelMessageSend(m.ChannelID, "```\n"+string(error_str)+"\n```")
+	}
+}
+
+// bash stuff, bc why not?
+func bashRun(s *discordgo.Session, m *discordgo.MessageCreate) {
+	cmdstring := strings.Replace(m.Content, "!bash ", "", -1)
+
+	cmd := exec.Command("sudo", "su", "discord", "bash", "-c", cmdstring)
+
+	fmt.Println("running bash command:", cmdstring)
+	out, err := cmd.CombinedOutput()
+
+	if uniseg.GraphemeClusterCount(string(out)) > 2000 {
+		s.ChannelMessageSend(m.ChannelID, "Sorry, the output of that command is over the 2000 character limit set by discord")
+		return
+	}
+
+	s.ChannelMessageSend(m.ChannelID, "```\n"+string(out)+"\n```")
+	if err != nil {
+		error_str := string(err.Error())
+		fmt.Println(error_str)
+		s.ChannelMessageSend(m.ChannelID, "```\n"+error_str+"\n```")
+	}
+
+	fmt.Println("finished running command!")
+}
+
 func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	// if message sender is the bot, ignore message
@@ -94,6 +198,27 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// my userid: 321028131982934017
 	var owner_id = "321028131982934017"
 
+	if m.Author.ID == owner_id {
+		switch m.Content {
+
+		case "!neofetch":
+			neofetch(s, m)
+
+		case "!uptime":
+			uptime(s, m)
+
+		case "!stop":
+			stopbot(s, m)
+		default:
+			if strings.HasPrefix(m.Content, "!bash") {
+				bashRun(s, m)
+			} else {
+				return
+			}
+		}
+
+	}
+
 	switch m.Content {
 	case "!ping":
 		s.ChannelMessageSend(m.ChannelID, "pong")
@@ -103,22 +228,10 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		s.ChannelMessageSend(m.ChannelID, m.Author.ID)
 
 	case "!ownertest":
-		// tests if the user is the owner by comparing the userid to owner_id
-		if m.Author.ID == owner_id {
-			s.ChannelMessageSend(m.ChannelID, "you own the bot")
-		} else {
-			s.ChannelMessageSend(m.ChannelID, "you don't own the bot")
-		}
+		ownertest(s, m, owner_id)
+
 	case "!dmtest":
-		dm_result, err := ComesFromDM(s, m)
-		if err != nil {
-			s.ChannelMessageSend(m.ChannelID, "something went wrong")
-		}
-		if dm_result {
-			s.ChannelMessageSend(m.ChannelID, "this is a dm")
-		} else {
-			s.ChannelMessageSend(m.ChannelID, "this isn't a dm")
-		}
+		dmtest(s, m)
 
 	case "!jebaited":
 		// you just got jebaited
@@ -132,69 +245,11 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		// links to my website
 		s.ChannelMessageSend(m.ChannelID, "<http://www.gardling.com>")
 
-	case "!neofetch":
-		// runs neofetch
-		if m.Author.ID == owner_id {
-			cmdstring := "/usr/bin/neofetch --stdout --color_blocks off | sed 's/\x1B[[0-9;?]*[a-zA-Z]//g' | sed '/^[[:space:]]*$/d'"
-
-			fmt.Println("running neofetch")
-			cmd := exec.Command("sudo", "su", "discord", "bash", "-c", cmdstring)
-
-			out, err := cmd.CombinedOutput()
-			s.ChannelMessageSend(m.ChannelID, "```\n"+string(out)+"\n```")
-			if err != nil {
-				error_str := string(err.Error())
-				fmt.Println(error_str)
-				s.ChannelMessageSend(m.ChannelID, "```\n"+string(error_str)+"\n```")
-			}
-			fmt.Println("ran neofetch")
-
-		} else {
-			s.ChannelMessageSend(m.ChannelID, "you have to be the owner to do that!")
-		}
-	case "!uptime":
-		// does uptime -p
-		cmdstring := "uptime -p | sed '/^[[:space:]]*$/d'"
-
-		fmt.Println("running uptime")
-		cmd := exec.Command("bash", "-c", cmdstring)
-		out, err := cmd.CombinedOutput()
-
-		s.ChannelMessageSend(m.ChannelID, "```\n"+string(out)+"\n```")
-		if err != nil {
-			error_str := string(err.Error())
-			fmt.Println(error_str)
-			s.ChannelMessageSend(m.ChannelID, "```\n"+string(error_str)+"\n```")
-		}
-
-	case "!stop":
-		// kills the bot
-		if m.Author.ID == owner_id {
-
-			fmt.Println("shutting down bot")
-			s.ChannelMessageSend(m.ChannelID, "shutting down bot!")
-			os.Exit(0)
-		} else {
-			s.ChannelMessageSend(m.ChannelID, "you have to be the owner to shut down the bot!")
-		}
 	case "thx bot":
 		// takes complements
 		s.ChannelMessageSend(m.ChannelID, "np bro")
 
 	case "!temps":
-		// runs the temps command (my own shell script)
-		cmdstring := "temps"
-
-		fmt.Println("running temps")
-		cmd := exec.Command("bash", "-c", cmdstring)
-		out, err := cmd.CombinedOutput()
-
-		s.ChannelMessageSend(m.ChannelID, "```\n"+string(out)+"\n```")
-		if err != nil {
-			error_str := string(err.Error())
-			fmt.Println(error_str)
-			s.ChannelMessageSend(m.ChannelID, "```\n"+string(error_str)+"\n```")
-		}
 
 	case "pog":
 		// responds to "pog" with "poggers"
@@ -210,34 +265,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		s.ChannelMessageSend(m.ChannelID, "https://www.youtube.com/watch?v=LDU_Txk06tM")
 
 	default:
-		// bash stuff, bc why not?
-		if strings.HasPrefix(m.Content, "!bash") {
-			if m.Author.ID == owner_id {
-				cmdstring := strings.Replace(m.Content, "!bash ", "", -1)
-
-				cmd := exec.Command("sudo", "su", "discord", "bash", "-c", cmdstring)
-
-				fmt.Println("running bash command:", cmdstring)
-				out, err := cmd.CombinedOutput()
-
-				if uniseg.GraphemeClusterCount(string(out)) > 2000 {
-					s.ChannelMessageSend(m.ChannelID, "Sorry, the output of that command is over the 2000 character limit set by discord")
-					return
-				}
-
-				s.ChannelMessageSend(m.ChannelID, "```\n"+string(out)+"\n```")
-				if err != nil {
-					error_str := string(err.Error())
-					fmt.Println(error_str)
-					s.ChannelMessageSend(m.ChannelID, "```\n"+error_str+"\n```")
-				}
-
-				fmt.Println("ran command")
-
-			} else {
-				s.ChannelMessageSend(m.ChannelID, "you have to be the owner to do that!")
-			}
-		}
+		return
 	}
 
 	// send message: s.ChannelMessageSend(m.ChannelID, message)
