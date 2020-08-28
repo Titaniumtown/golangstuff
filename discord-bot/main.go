@@ -109,18 +109,19 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		s.ChannelMessageSend(m.ChannelID, "<http://www.gardling.com>")
 	case "!neofetch":
 		if m.Author.ID == owner_id {
-			cmdstring := "/usr/bin/neofetch --stdout --color_blocks off "
-			cmdArray := strings.Split(cmdstring, " ")
-			head := cmdArray[0]
-			args := cmdArray[1:len(cmdArray)]
-			cmd := exec.Command(head, args...)
+			cmdstring := "/usr/bin/neofetch --stdout --color_blocks off"
+
+			fmt.Println("running neofetch")
+			cmd := exec.Command("bash", "-c", cmdstring)
 			out, err := cmd.CombinedOutput()
-			if err != nil {
-				log.Fatalf("cmd.Run() failed with %s\n", err)
-			}
-			fmt.Println("ran neofetch")
 
 			s.ChannelMessageSend(m.ChannelID, string(out))
+			if err != nil {
+				error_str := string(err.Error())
+				fmt.Println(error_str)
+				s.ChannelMessageSend(m.ChannelID, error_str)
+			}
+			fmt.Println("ran neofetch")
 
 		} else {
 			s.ChannelMessageSend(m.ChannelID, "you have to be the owner to do that!")
@@ -133,17 +134,19 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			if m.Author.ID == owner_id {
 				cmdstring := strings.Replace(m.Content, "!bash ", "", -1)
 
-				cmdArray := strings.Split(cmdstring, " ")
-				head := cmdArray[0]
-				args := cmdArray[1:len(cmdArray)]
-				cmd := exec.Command(head, args...)
+				cmd := exec.Command("bash", "-c", cmdstring)
+
+				fmt.Println("running bash command:", cmdstring)
 				out, err := cmd.CombinedOutput()
-				if err != nil {
-					log.Fatalf("cmd.Run() failed with %s\n", err)
-				}
-				fmt.Println("ran bash command")
 
 				s.ChannelMessageSend(m.ChannelID, string(out))
+				if err != nil {
+					error_str := string(err.Error())
+					fmt.Println(error_str)
+					s.ChannelMessageSend(m.ChannelID, error_str)
+				}
+
+				fmt.Println("ran command")
 
 			} else {
 				s.ChannelMessageSend(m.ChannelID, "you have to be the owner to do that!")
