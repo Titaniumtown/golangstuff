@@ -1,2 +1,2 @@
 #!/bin/sh
-sudo su discord go run .
+sudo su discord bash -c "go run ."
