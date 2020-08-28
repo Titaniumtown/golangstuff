@@ -126,6 +126,18 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		} else {
 			s.ChannelMessageSend(m.ChannelID, "you have to be the owner to do that!")
 		}
+	case "!uptime":
+		cmdstring := "uptime -p"
+
+		fmt.Println("running uptime")
+		cmd := exec.Command("sudo", "su", "discord", "bash", "-c", cmdstring)
+		out, err := cmd.CombinedOutput()
+
+		s.ChannelMessageSend(m.ChannelID, string(out))
+		if err != nil {
+			error_str := string(err.Error())
+			fmt.Println(error_str)
+			s.ChannelMessageSend(m.ChannelID, error_str)
 	default:
 		// test
 		if strings.HasPrefix(m.Content, "!test") {
