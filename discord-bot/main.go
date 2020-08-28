@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"os/exec"
 	"os/signal"
 	"strings"
 	"syscall"
@@ -94,6 +95,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		} else {
 			s.ChannelMessageSend(m.ChannelID, "you don't own the bot")
 		}
+
 	case "!jebaited":
 		// you just got jebaited
 		s.ChannelMessageSend(m.ChannelID, "http://www.gardling.com/coolvideo6")
@@ -102,10 +104,50 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		// responds to every message "bruh" with "moment"
 		s.ChannelMessageSend(m.ChannelID, "moment")
 
+	case "!website":
+		// links to my website
+		s.ChannelMessageSend(m.ChannelID, "<http://www.gardling.com>")
+	case "!neofetch":
+		if m.Author.ID == owner_id {
+			cmdstring := "/usr/bin/neofetch --stdout --color_blocks off "
+			cmdArray := strings.Split(cmdstring, " ")
+			head := cmdArray[0]
+			args := cmdArray[1:len(cmdArray)]
+			cmd := exec.Command(head, args...)
+			out, err := cmd.CombinedOutput()
+			if err != nil {
+				log.Fatalf("cmd.Run() failed with %s\n", err)
+			}
+			fmt.Println("ran neofetch")
+
+			s.ChannelMessageSend(m.ChannelID, string(out))
+
+		} else {
+			s.ChannelMessageSend(m.ChannelID, "you have to be the owner to do that!")
+		}
 	default:
 		// test
 		if strings.HasPrefix(m.Content, "!test") {
 			s.ChannelMessageSend(m.ChannelID, "test")
+		} else if strings.HasPrefix(m.Content, "!bash") {
+			if m.Author.ID == owner_id {
+				cmdstring := strings.Replace(m.Content, "!bash ", "", -1)
+
+				cmdArray := strings.Split(cmdstring, " ")
+				head := cmdArray[0]
+				args := cmdArray[1:len(cmdArray)]
+				cmd := exec.Command(head, args...)
+				out, err := cmd.CombinedOutput()
+				if err != nil {
+					log.Fatalf("cmd.Run() failed with %s\n", err)
+				}
+				fmt.Println("ran bash command")
+
+				s.ChannelMessageSend(m.ChannelID, string(out))
+
+			} else {
+				s.ChannelMessageSend(m.ChannelID, "you have to be the owner to do that!")
+			}
 		}
 	}
 
