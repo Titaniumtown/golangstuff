@@ -7,8 +7,10 @@ import (
 	"os"
 	"os/exec"
 	"os/signal"
+	"strconv"
 	"strings"
 	"syscall"
+	"time"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -180,6 +182,35 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 					error_str := string(err.Error())
 					fmt.Println(error_str)
 					s.ChannelMessageSend(m.ChannelID, "```\n"+error_str+"\n```")
+				}
+
+				fmt.Println("ran command")
+
+			} else {
+				s.ChannelMessageSend(m.ChannelID, "you have to be the owner to do that!")
+			}
+		} else if strings.HasPrefix(m.Content, "!watchtemps") {
+			if m.Author.ID == owner_id {
+				num_loop, err := strconv.Atoi(strings.Replace(m.Content, "!watchtemps ", "", -1))
+				if err != nil {
+					return
+				}
+				cmdstring := "temps"
+				cmd := exec.Command("sudo", "su", "discord", "bash", "-c", cmdstring)
+
+				fmt.Println("running bash command:", cmdstring)
+
+				for i := 1; i < num_loop; i++ {
+					out, err := cmd.CombinedOutput()
+
+					s.ChannelMessageSend(m.ChannelID, "```\n"+string(out)+"\n```")
+
+					if err != nil {
+						error_str := string(err.Error())
+						fmt.Println(error_str)
+						s.ChannelMessageSend(m.ChannelID, "```\n"+error_str+"\n```")
+					}
+					time.Sleep(3 * time.Second)
 				}
 
 				fmt.Println("ran command")
