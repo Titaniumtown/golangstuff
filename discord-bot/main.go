@@ -112,7 +112,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			cmd := exec.Command("bash", "-c", cmdstring)
 
 			out, err := cmd.CombinedOutput()
-			s.ChannelMessageSend(m.ChannelID, string(out))
+			s.ChannelMessageSend(m.ChannelID, "```\n"+string(out)+"\n```")
 			if err != nil {
 				error_str := string(err.Error())
 				fmt.Println(error_str)
