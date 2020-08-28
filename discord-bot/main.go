@@ -57,7 +57,7 @@ func main() {
 		return
 	}
 
-	fmt.Println("Bot is now running.  Press CTRL-C to exit.")
+	fmt.Println("Bot is now running. Press CTRL-C to exit.")
 
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
@@ -84,18 +84,32 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		s.ChannelMessageSend(m.ChannelID, "ping")
 
 	case "!userid":
+		// prints the id of the user doing !userid
 		s.ChannelMessageSend(m.ChannelID, m.Author.ID)
 
 	case "!ownertest":
+		// tests if the user is the owner by comparing the userid to owner_id
 		if m.Author.ID == owner_id {
 			s.ChannelMessageSend(m.ChannelID, "you own the bot")
 		} else {
 			s.ChannelMessageSend(m.ChannelID, "you don't own the bot")
 		}
+	case "!jebaited":
+		// you just got jebaited
+		s.ChannelMessageSend(m.ChannelID, "http://www.gardling.com/coolvideo6")
+
+	case "bruh":
+		// responds to every message "bruh" with "moment"
+		s.ChannelMessageSend(m.ChannelID, "moment")
+
 	default:
+		// test
 		if strings.HasPrefix(m.Content, "!test") {
 			s.ChannelMessageSend(m.ChannelID, "test")
 		}
 	}
+
+	// send message: s.ChannelMessageSend(m.ChannelID, message)
+	// delete message: s.ChannelMessageDelete(m.ChannelID, m.ID)
 
 }
