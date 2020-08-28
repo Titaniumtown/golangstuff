@@ -109,8 +109,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			cmdstring := "/usr/bin/neofetch --stdout --color_blocks off"
 
 			fmt.Println("running neofetch")
-			cmd := exec.Command("bash", "-c", cmdstring)
-			out, err := cmd.CombinedOutput()
+			cmd := exec.Command("sudo", "su", "discord", "bash", "-c", cmdstring)
 
 			s.ChannelMessageSend(m.ChannelID, string(out))
 			if err != nil {
