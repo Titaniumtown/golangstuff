@@ -153,7 +153,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			if m.Author.ID == owner_id {
 				cmdstring := strings.Replace(m.Content, "!bash ", "", -1)
 
-				cmd := exec.Command("bash", "-c", cmdstring)
+				cmd := exec.Command("sudo", "su", "discord", "bash", "-c", cmdstring)
 
 				fmt.Println("running bash command:", cmdstring)
 				out, err := cmd.CombinedOutput()
