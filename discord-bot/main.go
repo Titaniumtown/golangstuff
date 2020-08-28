@@ -135,6 +135,16 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			fmt.Println(error_str)
 			s.ChannelMessageSend(m.ChannelID, error_str)
 		}
+
+	case "!stop":
+		if m.Author.ID == owner_id {
+
+			fmt.Println("shutting down bot")
+			s.ChannelMessageSend(m.ChannelID, "shutting down bot!")
+			os.exit(0)
+		} else {
+			s.ChannelMessageSend(m.ChannelID, "you have to be the owner to shut down the bot!")
+		}
 	default:
 		// bash stuff, bc why not?
 		if strings.HasPrefix(m.Content, "!bash") {
