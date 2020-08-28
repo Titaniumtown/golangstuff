@@ -162,7 +162,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				if err != nil {
 					error_str := string(err.Error())
 					fmt.Println(error_str)
-					s.ChannelMessageSend(m.ChannelID, "```\n"+string(error_str)+"\n```")
+					s.ChannelMessageSend(m.ChannelID, "```\n"+error_str+"\n```")
 				}
 
 				fmt.Println("ran command")
