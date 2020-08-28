@@ -172,7 +172,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		}
 
 	case "pog":
-		// responds to "pog" with "poggers1"
+		// responds to "pog" with "poggers"
 		s.ChannelMessageSend(m.ChannelID, "poggers")
 
 	case "!crab":
