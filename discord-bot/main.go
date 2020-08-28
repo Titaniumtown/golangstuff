@@ -95,11 +95,11 @@ func ownertest(s *discordgo.Session, m *discordgo.MessageCreate, owner_id string
 }
 
 func dmtest(s *discordgo.Session, m *discordgo.MessageCreate) {
-	dm_result, err := ComesFromDM(s, m)
+	dmResult, err := ComesFromDM(s, m)
 	if err != nil {
 		s.ChannelMessageSend(m.ChannelID, "something went wrong")
 	}
-	if dm_result {
+	if dmResult {
 		s.ChannelMessageSend(m.ChannelID, "this is a dm")
 	} else {
 		s.ChannelMessageSend(m.ChannelID, "this isn't a dm")
@@ -188,37 +188,7 @@ func bashRun(s *discordgo.Session, m *discordgo.MessageCreate) {
 	fmt.Println("finished running command!")
 }
 
-func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
-
-	// if message sender is the bot, ignore message
-	if m.Author.ID == s.State.User.ID {
-		return
-	}
-
-	// my userid: 321028131982934017
-	var owner_id = "321028131982934017"
-
-	if m.Author.ID == owner_id {
-		switch m.Content {
-
-		case "!neofetch":
-			neofetch(s, m)
-
-		case "!uptime":
-			uptime(s, m)
-
-		case "!stop":
-			stopbot(s, m)
-		default:
-			if strings.HasPrefix(m.Content, "!bash") {
-				bashRun(s, m)
-			} else {
-				return
-			}
-		}
-
-	}
-
+func noPermsCmd(s *discordgo.Session, m *discordgo.MessageCreate, owner_id string) {
 	switch m.Content {
 	case "!ping":
 		s.ChannelMessageSend(m.ChannelID, "pong")
@@ -266,6 +236,40 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	default:
 		return
+	}
+}
+
+func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
+
+	// if message sender is the bot, ignore message
+	if m.Author.ID == s.State.User.ID {
+		return
+	}
+
+	// my userid: 321028131982934017
+	var owner_id = "321028131982934017"
+
+	if m.Author.ID == owner_id {
+		switch m.Content {
+
+		case "!neofetch":
+			neofetch(s, m)
+
+		case "!uptime":
+			uptime(s, m)
+
+		case "!stop":
+			stopbot(s, m)
+		default:
+			if strings.HasPrefix(m.Content, "!bash") {
+				bashRun(s, m)
+			} else {
+				noPermsCmd(s, m, owner_id)
+			}
+		}
+
+	} else {
+		noPermsCmd(s, m, owner_id)
 	}
 
 	// send message: s.ChannelMessageSend(m.ChannelID, message)
