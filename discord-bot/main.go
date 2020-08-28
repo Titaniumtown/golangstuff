@@ -175,6 +175,10 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		// responds to "pog" with "poggers"
 		s.ChannelMessageSend(m.ChannelID, "poggers")
 
+	case "!github":
+		// links to the github of the bot
+		s.ChannelMessageSend(m.ChannelID, "https://github.com/Titaniumtown/golangstuff/tree/master/discord-bot")
+
 	case "!crab":
 		// crab rave
 		s.ChannelMessageSend(m.ChannelID, ":crab: :crab: :crab: :crab: :crab: :crab: :crab:")
