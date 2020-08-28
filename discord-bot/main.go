@@ -111,6 +111,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			fmt.Println("running neofetch")
 			cmd := exec.Command("sudo", "su", "discord", "bash", "-c", cmdstring)
 
+			out, err := cmd.CombinedOutput()
 			s.ChannelMessageSend(m.ChannelID, string(out))
 			if err != nil {
 				error_str := string(err.Error())
@@ -141,7 +142,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 			fmt.Println("shutting down bot")
 			s.ChannelMessageSend(m.ChannelID, "shutting down bot!")
-			os.exit(0)
+			os.Exit(0)
 		} else {
 			s.ChannelMessageSend(m.ChannelID, "you have to be the owner to shut down the bot!")
 		}
