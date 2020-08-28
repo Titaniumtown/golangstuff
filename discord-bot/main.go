@@ -223,8 +223,6 @@ func noPermsCmd(s *discordgo.Session, m *discordgo.MessageCreate, owner_id strin
 		// takes complements
 		s.ChannelMessageSend(m.ChannelID, "np bro")
 
-	case "!temps":
-
 	case "pog":
 		// responds to "pog" with "poggers"
 		s.ChannelMessageSend(m.ChannelID, "poggers")
@@ -273,6 +271,8 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			case "!stop":
 				stopbot(s, m)
 
+			case "!temps":
+				temps(s, m)
 			default:
 				noPermsCmd(s, m, owner_id)
 			}
