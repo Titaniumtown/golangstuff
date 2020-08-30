@@ -211,6 +211,9 @@ func noPermsCmd(s *discordgo.Session, m *discordgo.MessageCreate, owner_id strin
 		// you just got jebaited
 		s.ChannelMessageSend(m.ChannelID, "http://www.gardling.com/coolvideo6")
 
+	case "!whyiuselinux":
+		s.ChannelMessageSend(m.ChannelID, "http://www.gardling.com/whyiuselinux")
+
 	case "bruh":
 		// responds to every message "bruh" with "moment"
 		s.ChannelMessageSend(m.ChannelID, "moment")
