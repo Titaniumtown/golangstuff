@@ -239,6 +239,10 @@ func noPermsCmd(s *discordgo.Session, m *discordgo.MessageCreate, owner_id strin
 		s.ChannelMessageSend(m.ChannelID, ":crab: :crab: :crab: :crab: :crab: :crab: :crab:")
 		s.ChannelMessageSend(m.ChannelID, "https://www.youtube.com/watch?v=LDU_Txk06tM")
 
+	case "yeet":
+		//test
+		s.ChannelMessageSend(m.ChannelID, "itayayita")
+		
 	default:
 		return
 	}
