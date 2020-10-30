@@ -259,7 +259,11 @@ func noPermsCmd(s *discordgo.Session, m *discordgo.MessageCreate, owner_id strin
 		fmt.Println("responding to 'yeet' with 'itayayita'")
 		//test by a friend
 		s.ChannelMessageSend(m.ChannelID, "itayayita")
-		
+	
+	case "i cri":
+		fmt.Println("responding to 'i cri' with 'im shaking and crying rn'")
+		s.ChannelMessageSend(m.ChannelID, "im shaking and crying rn")
+
 	default:
 		return
 	}
