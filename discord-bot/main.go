@@ -270,8 +270,11 @@ func noPermsCmd(s *discordgo.Session, m *discordgo.MessageCreate, owner_id strin
 }
 
 func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
-	if m.Author.ID == "721344385253507102" && strings.ToLower(m.content) == strings.ToLower("gf") {
-		s.ChannelMessageDelete(m.ChannelID, m.ID)
+	if m.Author.ID == "721344385253507102" {
+		if strings.ToLower(m.Content) == strings.ToLower("gf") {
+			fmt.Println("lol deleting message saying 'gf'")
+			s.ChannelMessageDelete(m.ChannelID, m.ID)
+		}
 	}
 	// if message sender is the bot, ignore message
 	if m.Author.ID == s.State.User.ID {
