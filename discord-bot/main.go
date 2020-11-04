@@ -287,6 +287,9 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		case s.State.User.ID:
 			return
 		case "721344385253507102":
+			dt := time.Now()
+			msginfo := fmt.Sprintf("(%s) %s: %s\n", dt.String(), m.Author.String(), m.Content)
+			fmt.Println(msginfo)
 			if strings.ToLower(m.Content) == strings.ToLower("gf") {
 				fmt.Println("lol deleting message saying 'gf'")
 				s.ChannelMessageDelete(m.ChannelID, m.ID)
