@@ -293,7 +293,8 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				s.ChannelMessageDelete(m.ChannelID, m.ID)
 			}
 		default:
-			fmt.Println(m.Content)
+			msginfo := fmt.Sprintf("%s: %s\n",m.author.String(), m.Content)
+			fmt.Println(msginfo)
 			if m.Author.ID == owner_id {
 				dmResult, err := ComesFromDM(s, m)
 				if err != nil {
