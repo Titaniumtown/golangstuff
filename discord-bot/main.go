@@ -9,9 +9,8 @@ import (
 	"os/signal"
 	"strings"
 	"syscall"
-
+	"time"
 	"github.com/rivo/uniseg"
-
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -293,7 +292,8 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				s.ChannelMessageDelete(m.ChannelID, m.ID)
 			}
 		default:
-			msginfo := fmt.Sprintf("%s: %s\n",m.Author.String(), m.Content)
+			dt := time.Now()
+			msginfo := fmt.Sprintf("(%s) %s: %s\n", dt.String(), m.Author.String(), m.Content)
 			fmt.Println(msginfo)
 			if m.Author.ID == owner_id {
 				dmResult, err := ComesFromDM(s, m)
