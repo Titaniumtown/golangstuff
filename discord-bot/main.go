@@ -270,6 +270,9 @@ func noPermsCmd(s *discordgo.Session, m *discordgo.MessageCreate, owner_id strin
 }
 
 func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
+	// my userid: 321028131982934017
+	var owner_id = "321028131982934017"
+
 	// if m.Author.ID == "721344385253507102" {
 	// 	if strings.ToLower(m.Content) == strings.ToLower("gf") {
 	// 		fmt.Println("lol deleting message saying 'gf'")
@@ -289,41 +292,43 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				fmt.Println("lol deleting message saying 'gf'")
 				s.ChannelMessageDelete(m.ChannelID, m.ID)
 			}
-	}
-	// my userid: 321028131982934017
-	var owner_id = "321028131982934017"
-
-	if m.Author.ID == owner_id {
-		dmResult, err := ComesFromDM(s, m)
-		if err != nil {
-			s.ChannelMessageSend(m.ChannelID, "something went wrong")
-		}
-		if dmResult {
-			if strings.HasPrefix(m.Content, "!bash") {
-				bashRun(s, m)
-			}
-
-			switch m.Content {
-			case "!neofetch":
-				neofetch(s, m)
-
-			case "!uptime":
-				uptime(s, m)
-
-			case "!stop":
-				stopbot(s, m)
-
-			case "!temps":
-				temps(s, m)
-			default:
+		default:
+			fmt.Println(m.Content)
+			if m.Author.ID == owner_id {
+				dmResult, err := ComesFromDM(s, m)
+				if err != nil {
+					s.ChannelMessageSend(m.ChannelID, "something went wrong")
+				}
+				if dmResult {
+					if strings.HasPrefix(m.Content, "!bash") {
+						bashRun(s, m)
+					}
+		
+					switch m.Content {
+					case "!neofetch":
+						neofetch(s, m)
+		
+					case "!uptime":
+						uptime(s, m)
+		
+					case "!stop":
+						stopbot(s, m)
+		
+					case "!temps":
+						temps(s, m)
+					default:
+						noPermsCmd(s, m, owner_id)
+					}
+				} else {
+					noPermsCmd(s, m, owner_id)
+				}
+			} else {
 				noPermsCmd(s, m, owner_id)
 			}
-		} else {
-			noPermsCmd(s, m, owner_id)
-		}
-	} else {
-		noPermsCmd(s, m, owner_id)
 	}
+
+
+
 
 	// send message: s.ChannelMessageSend(m.ChannelID, message)
 	// delete message: s.ChannelMessageDelete(m.ChannelID, m.ID)
