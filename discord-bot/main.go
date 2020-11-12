@@ -117,8 +117,8 @@ func neofetch(s *discordgo.Session, m *discordgo.MessageCreate) {
 	cmdstring := "/usr/bin/neofetch --stdout --color_blocks off | sed 's/\x1B[[0-9;?]*[a-zA-Z]//g' | sed '/^[[:space:]]*$/d'"
 
 	fmt.Println("running neofetch")
-	cmd := exec.Command("sudo", "su", "discord", "bash", "-c", cmdstring)
-
+	//cmd := exec.Command("sudo", "su", "discord", "bash", "-c", cmdstring)
+	cmd := exec.Command("bash", "-c", cmdstring)
 	out, err := cmd.CombinedOutput()
 	codesnippetprint(s, m, string(out))
 	if err != nil {
@@ -174,7 +174,7 @@ func temps(s *discordgo.Session, m *discordgo.MessageCreate) {
 // bash stuff, bc why not?
 func bashRun(s *discordgo.Session, m *discordgo.MessageCreate) {
 	cmdstring := strings.Replace(m.Content, "!bash ", "", -1)
-	cmd := exec.Command("sudo", "su", "discord", "bash", "-c", cmdstring)
+	cmd := exec.Command("bash", "-c", cmdstring)
 
 	fmt.Println("running bash command:", cmdstring)
 	out, err := cmd.CombinedOutput()
@@ -291,11 +291,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			msginfo := fmt.Sprintf("(%s) %s: %s\n", dt.String(), m.Author.String(), m.Content)
 			fmt.Println(msginfo)
 			if m.Author.ID == owner_id {
-				dmResult, err := ComesFromDM(s, m)
-				if err != nil {
-					s.ChannelMessageSend(m.ChannelID, "something went wrong")
-				}
-				if dmResult {
+				if m.Author.ID == owner_id {
 					if strings.HasPrefix(m.Content, "!bash") {
 						bashRun(s, m)
 					}
@@ -312,6 +308,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		
 					case "!temps":
 						temps(s, m)
+
 					default:
 						noPermsCmd(s, m, owner_id)
 					}
