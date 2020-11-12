@@ -171,6 +171,36 @@ func temps(s *discordgo.Session, m *discordgo.MessageCreate) {
 	fmt.Println("ran temps")
 }
 
+func ltsmstock(s *discordgo.Session, m *discordgo.MessageCreate) {
+	//cmdstring := strings.Replace(m.Content, "!bash ", "", -1)
+	var cmdstring = "python /mnt/hdd/ltsm_stocks/discordbot.py > /tmp/discordbot_ltsm.txt"
+	cmd := exec.Command("bash", "-c", cmdstring)
+
+	fmt.Println("running bash command:", cmdstring)
+	out, err := cmd.CombinedOutput()
+
+	//if uniseg.GraphemeClusterCount(string(out)) > 2000 {
+	//	s.ChannelMessageSend(m.ChannelID, "Sorry, the output of that command is over the 2000 character limit set by discord")
+	//	fmt.Println("Message sent was over 2000 char limit")
+	//	return
+	//}
+	cmdstring = "cat /tmp/discordbot_ltsm.txt | grep filename"
+	cmd = exec.Command("bash", "-c", cmdstring)
+
+	fmt.Println("running bash command:", cmdstring)
+	out, err = cmd.CombinedOutput()
+	
+	codesnippetprint(s, m, string(out))
+	if err != nil {
+		error_str := string(err.Error())
+		fmt.Println(error_str)
+		codesnippetprint(s, m, error_str)
+	}
+
+	fmt.Println("finished running command!")
+}
+
+
 // bash stuff, bc why not?
 func bashRun(s *discordgo.Session, m *discordgo.MessageCreate) {
 	cmdstring := strings.Replace(m.Content, "!bash ", "", -1)
@@ -308,6 +338,9 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		
 					case "!temps":
 						temps(s, m)
+
+					case "!stock":
+						ltsmstock(s, m)
 
 					default:
 						noPermsCmd(s, m, owner_id)
