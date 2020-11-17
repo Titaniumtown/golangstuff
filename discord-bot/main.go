@@ -290,36 +290,30 @@ func noPermsCmd(s *discordgo.Session, m *discordgo.MessageCreate, owner_id strin
 		s.ChannelMessageSend(m.ChannelID, "itayayita")
 	
 	case "i cri":
-		fmt.Println("responding to 'i cri' with 'im shaking and crying rn'")
-		s.ChannelMessageSend(m.ChannelID, "im shaking and crying rn")
+		fmt.Println("responding to 'i cri' with 'are you shaking and crying rn?'")
+		s.ChannelMessageSend(m.ChannelID, "are you shaking and crying rn?")
 
 	default:
 		return
 	}
 }
 
+func printcreate(s *discordgo.Session, m *discordgo.MessageCreate) {
+   dt := time.Now()
+   msginfo := fmt.Sprintf("(%s) server:%s channel:%s user:%s: %s\n", dt.String(), m.GuildID, m.ChannelID ,m.Author.String(), m.Content)
+   fmt.Println(msginfo)
+}
+
+
 func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// my userid: 321028131982934017
 	var owner_id = "321028131982934017"
-
-	// if m.Author.ID == "721344385253507102" {
-	// 	if strings.ToLower(m.Content) == strings.ToLower("gf") {
-	// 		fmt.Println("lol deleting message saying 'gf'")
-	// 		s.ChannelMessageDelete(m.ChannelID, m.ID)
-	// 	}
-	// }
-	// if message sender is the bot, ignore message
-	// if m.Author.ID == s.State.User.ID {
-		// return
-	// }
 
 	switch m.Author.ID{
 		case s.State.User.ID:
 			return
 		default:
-			dt := time.Now()
-			msginfo := fmt.Sprintf("(%s) %s: %s\n", dt.String(), m.Author.String(), m.Content)
-			fmt.Println(msginfo)
+			printcreate(s,m)
 			if m.Author.ID == owner_id {
 				if m.Author.ID == owner_id {
 					if strings.HasPrefix(m.Content, "!bash") {
