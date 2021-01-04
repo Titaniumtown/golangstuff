@@ -300,7 +300,7 @@ func noPermsCmd(s *discordgo.Session, m *discordgo.MessageCreate, owner_id strin
 
 func printcreate(s *discordgo.Session, m *discordgo.MessageCreate) {
    dt := time.Now()
-   msginfo := fmt.Sprintf("(%s) server:%s channel:%s user:%s: %s\n", dt.String(), m.GuildID, m.ChannelID ,m.Author.String(), m.Content)
+   msginfo := fmt.Sprintf("(%s) server:%s channel:%s user:%s: %s\n", dt.String(), m.GuildID, m.ChannelID, m.Author.String(), m.Content)
    fmt.Println(msginfo)
 }
 
@@ -313,8 +313,16 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			return
 		default:
 			printcreate(s,m)
-			if (m.GuildID == "795029627750973512" && m.Author.String() == "GitHub#0000") || (m.Content == "!githubnotificationtest") {
-				s.ChannelMessageSend("795030212206264380", "<@&795688672418725908> new commits pushed to TitaniumMC! Get the latest build from: <http://www.gardling.com/titaniumclip.jar>")
+			var githubPingGuildID = "795029627750973512"
+			var githubPingChannelID = "795030212206264380"
+			// var githubPingChannelID = "795697777706795018" // Private testing channel
+			var githubPingMessage = "<@&795688672418725908> new commits pushed to TitaniumMC! Get the latest build from: <http://www.gardling.com/titaniumclip.jar>"
+			if (m.GuildID == githubPingGuildID && m.Author.String() == "GitHub#0000" ) || (m.Content == "!githubnotificationtest") {
+				EmbedsString := fmt.Sprintf("%s", m.Embeds)
+				if strings.Contains(EmbedsString, " new commit ") {
+					s.ChannelMessageSend(githubPingChannelID, githubPingMessage)
+				}
+				
 			}
 			if m.Author.ID == owner_id {
 				if m.Author.ID == owner_id {
