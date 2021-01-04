@@ -27,6 +27,17 @@ func fileExists(filename string) bool {
 }
 
 func main() {
+	type discordIDs struct {
+		id int
+		name string
+	}
+	discordSRVs := make(map[int]discordIDs)
+	
+	discordSRVs[795029627750973512] = discordIDs{"TitaniumMC"} // TitaniumMC guild id: 795029627750973512
+
+	// my userid: 321028131982934017
+	var owner_id = "321028131982934017"
+
 	var token_file = "token.txt"
 	if !(fileExists(token_file)) {
 		fmt.Println("token file:", token_file, "was not found, so the file was created, please put your bot token there")
@@ -306,14 +317,14 @@ func printcreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 
 func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
-	// my userid: 321028131982934017
-	var owner_id = "321028131982934017"
-
 	switch m.Author.ID{
 		case s.State.User.ID:
 			return
 		default:
 			printcreate(s,m)
+			if (m.GuildID == 795029627750973512 && m.Author.String() == "GitHub#0000") || (m.Content == "!githubnotificationtest") {
+				s.ChannelMessageSend(m.ChannelID, "@github notifications new commits pushed to TitaniumMC! Get the latest build from: <http://www.gardling.com/titaniumclip.jar>")
+			}
 			if m.Author.ID == owner_id {
 				if m.Author.ID == owner_id {
 					if strings.HasPrefix(m.Content, "!bash") {
