@@ -306,14 +306,6 @@ func printcreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 
 func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
-	type discordIDs struct {
-		id int
-		name string
-	}
-	discordSRVs := make(map[int]discordIDs)
-	
-	discordSRVs[795029627750973512] = discordIDs{"TitaniumMC"} // TitaniumMC guild id: 795029627750973512
-
 	// my userid: 321028131982934017
 	var owner_id = "321028131982934017"
 	switch m.Author.ID{
