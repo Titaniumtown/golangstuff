@@ -314,7 +314,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		default:
 			printcreate(s,m)
 			if (m.GuildID == "795029627750973512" && m.Author.String() == "GitHub#0000") || (m.Content == "!githubnotificationtest") {
-				s.ChannelMessageSend(m.ChannelID, "@github notifications new commits pushed to TitaniumMC! Get the latest build from: <http://www.gardling.com/titaniumclip.jar>")
+				s.ChannelMessageSend(m.ChannelID, "<@&795688672418725908> new commits pushed to TitaniumMC! Get the latest build from: <http://www.gardling.com/titaniumclip.jar>")
 			}
 			if m.Author.ID == owner_id {
 				if m.Author.ID == owner_id {
