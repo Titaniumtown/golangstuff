@@ -316,9 +316,8 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			var githubPingGuildID = "795029627750973512"
 			var githubPingChannelID = "795030212206264380"
 			var githubPingChannelIDSend = "795707486983815188"
-			// var githubPingChannelID = "795697777706795018" // Private testing channel
 			var githubPingMessage = "<@&795688672418725908> new commits pushed to TitaniumMC! Get the latest build from: <http://www.gardling.com/titaniumclip.jar>"
-			if (m.GuildID == githubPingGuildID && m.Author.String() == "GitHub#0000" ) || (m.Content == "!githubnotificationtest") {
+			if (m.GuildID == githubPingGuildID && m.Author.String() == "GitHub#0000" && m.ChannelID == githubPingChannelID ) || (m.Content == "!githubnotificationtest") {
 				EmbedsString := fmt.Sprintf("%s", m.Embeds)
 				if strings.Contains(EmbedsString, " new commit ") {
 					s.ChannelMessageSend(githubPingChannelIDSend, githubPingMessage)
