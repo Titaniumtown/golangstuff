@@ -319,6 +319,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			var githubPingMessage = "<@&795688672418725908> new commits pushed to TitaniumMC! Get the latest build from: <http://www.gardling.com/titaniumclip.jar>"
 			if (m.GuildID == githubPingGuildID && m.Author.String() == "GitHub#0000" && m.ChannelID == githubPingChannelID ) || (m.Content == "!githubnotificationtest") {
 				EmbedsString := fmt.Sprintf("%s", m.Embeds)
+				fmt.Sprintf("# Github webhook Embed contents: (%s)", EmbedsString)
 				var ciSkip = strings.Contains(EmbedsString, "[CI-SKIP]")
 
 				if ( (strings.Contains(EmbedsString, " new commit ") && strings.Contains(EmbedsString, "TitaniumMC:master")) && !ciSkip ) {
