@@ -315,14 +315,22 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			printcreate(s,m)
 			var githubPingGuildID = "795029627750973512"
 			var githubPingChannelID = "795030212206264380"
-			var githubPingChannelIDSend = "795707486983815188"
+			var githubPingChannelIDSendNormal = "795707486983815188"
+			var githubPingChannelIDSendTest = "795697777706795018"
 			var githubPingMessage = "<@&795688672418725908> new commits pushed to the master branch of TitaniumMC. :tada: Unless you have an extremely good reason not to update, You should really update your server ASAP! As always, you can download the latest build at: <http://www.gardling.com/titaniumclip.jar>"
-			if (m.GuildID == githubPingGuildID && m.Author.String() == "GitHub#0000" && m.ChannelID == githubPingChannelID ) || (m.Content == "!githubnotificationtest") {
+			var githubPingChannelIDSend = githubPingChannelIDSendNormal
+
+			githubwebhook := m.GuildID == githubPingGuildID && m.Author.String() == "GitHub#0000" && m.ChannelID == githubPingChannelID
+			githubnotiftest := m.Content == "!githubnotificationtest"
+			if (githubwebhook || githubnotiftest) {
 				EmbedsString := fmt.Sprintf("%s", m.Embeds)
 				fmt.Sprintf("# Github webhook Embed contents: (%s)", EmbedsString)
 				var ciSkip = strings.Contains(EmbedsString, "[CI-SKIP]")
 
 				if ( (strings.Contains(EmbedsString, " new commit ") && strings.Contains(EmbedsString, "TitaniumMC:master")) && !ciSkip ) {
+					if (githubnotiftest) {
+						githubPingChannelIDSend = githubPingChannelIDSendTest
+					}
 					s.ChannelMessageSend(githubPingChannelIDSend, githubPingMessage)
 				}
 				
