@@ -316,7 +316,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			var githubPingGuildID = "795029627750973512"
 			var githubPingChannelID = "795030212206264380"
 			var githubPingChannelIDSend = "795707486983815188"
-			var githubPingMessage = "<@&795688672418725908> new commits pushed to TitaniumMC! Get the latest build from: <http://www.gardling.com/titaniumclip.jar>"
+			var githubPingMessage = "<@&795688672418725908> new commits pushed to the master branch of TitaniumMC. :tada: Unless you have an extremely good reason not to update, You should really update your server ASAP! As always, you can download the latest build at: <http://www.gardling.com/titaniumclip.jar>"
 			if (m.GuildID == githubPingGuildID && m.Author.String() == "GitHub#0000" && m.ChannelID == githubPingChannelID ) || (m.Content == "!githubnotificationtest") {
 				EmbedsString := fmt.Sprintf("%s", m.Embeds)
 				fmt.Sprintf("# Github webhook Embed contents: (%s)", EmbedsString)
