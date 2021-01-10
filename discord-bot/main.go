@@ -335,6 +335,9 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				}
 				
 			}
+			if strings.Contains(m.Content, "vm.tiktok.com") {
+				s.ChannelMessageDelete(m.ChannelID, m.ID)
+			}
 			if m.Author.ID == owner_id {
 				if m.Author.ID == owner_id {
 					if strings.HasPrefix(m.Content, "!bash") {
