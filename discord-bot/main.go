@@ -4,14 +4,16 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"math/rand"
 	"os"
 	"os/exec"
 	"os/signal"
 	"strings"
 	"syscall"
 	"time"
-	"github.com/rivo/uniseg"
+
 	"github.com/bwmarrin/discordgo"
+	"github.com/rivo/uniseg"
 )
 
 var (
@@ -189,7 +191,7 @@ func ltsmstock(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	fmt.Println("running bash command:", cmdstring)
 	out, err = cmd.CombinedOutput()
-	
+
 	codesnippetprint(s, m, string(out))
 	if err != nil {
 		error_str := string(err.Error())
@@ -199,7 +201,6 @@ func ltsmstock(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	fmt.Println("finished running command!")
 }
-
 
 // bash stuff, bc why not?
 func bashRun(s *discordgo.Session, m *discordgo.MessageCreate) {
@@ -288,7 +289,7 @@ func noPermsCmd(s *discordgo.Session, m *discordgo.MessageCreate, owner_id strin
 		fmt.Println("responding to 'yeet' with 'itayayita'")
 		//test by a friend
 		s.ChannelMessageSend(m.ChannelID, "itayayita")
-	
+
 	case "i cri":
 		fmt.Println("responding to 'i cri' with 'are you shaking and crying rn?'")
 		s.ChannelMessageSend(m.ChannelID, "are you shaking and crying rn?")
@@ -299,80 +300,80 @@ func noPermsCmd(s *discordgo.Session, m *discordgo.MessageCreate, owner_id strin
 }
 
 func printcreate(s *discordgo.Session, m *discordgo.MessageCreate) {
-   dt := time.Now()
-   msginfo := fmt.Sprintf("(%s) server:%s channel:%s user:%s: %s\n", dt.String(), m.GuildID, m.ChannelID, m.Author.String(), m.Content)
-   fmt.Println(msginfo)
+	dt := time.Now()
+	msginfo := fmt.Sprintf("(%s) server:%s channel:%s user:%s: %s\n", dt.String(), m.GuildID, m.ChannelID, m.Author.String(), m.Content)
+	fmt.Println(msginfo)
 }
-
 
 func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// my userid: 321028131982934017
 	var owner_id = "321028131982934017"
-	switch m.Author.ID{
-		case s.State.User.ID:
-			return
-		default:
-			printcreate(s,m)
-			var githubPingGuildID = "795029627750973512"
-			var githubPingChannelID = "795030212206264380"
-			var githubPingChannelIDSendNormal = "795707486983815188"
-			var githubPingChannelIDSendTest = "795697777706795018"
-			var githubPingMessage = "<@&795688672418725908> new commits pushed to the master branch of TitaniumMC. :tada: Unless you have an extremely good reason not to update, You should really update your server ASAP! As always, you can download the latest build at: <http://www.gardling.com/titaniumclip.jar>"
-			var githubPingChannelIDSend = githubPingChannelIDSendNormal
+	switch m.Author.ID {
+	case s.State.User.ID:
+		return
+	default:
+		if rand.Intn(10000) == 69 {
+			fmt.Sprintf("miceraft")
+			s.ChannelMessageSend(m.ChannelID, "don't spam!")
+		}
+		printcreate(s, m)
+		var githubPingGuildID = "795029627750973512"
+		var githubPingChannelID = "795030212206264380"
+		var githubPingChannelIDSendNormal = "795707486983815188"
+		var githubPingChannelIDSendTest = "795697777706795018"
+		var githubPingMessage = "<@&795688672418725908> new commits pushed to the master branch of TitaniumMC. :tada: Unless you have an extremely good reason not to update, You should really update your server ASAP! As always, you can download the latest build at: <http://www.gardling.com/titaniumclip.jar>"
+		var githubPingChannelIDSend = githubPingChannelIDSendNormal
 
-			githubwebhook := m.GuildID == githubPingGuildID && m.Author.String() == "GitHub#0000" && m.ChannelID == githubPingChannelID
-			githubnotiftest := m.Content == "!githubnotificationtest"
-			if (githubwebhook || githubnotiftest) {
-				EmbedsString := fmt.Sprintf("%s", m.Embeds)
-				fmt.Sprintf("# Github webhook Embed contents: (%s)", EmbedsString)
-				var ciSkip = strings.Contains(EmbedsString, "[CI-SKIP]")
+		githubwebhook := m.GuildID == githubPingGuildID && m.Author.String() == "GitHub#0000" && m.ChannelID == githubPingChannelID
+		githubnotiftest := m.Content == "!githubnotificationtest"
+		if githubwebhook || githubnotiftest {
+			EmbedsString := fmt.Sprintf("%s", m.Embeds)
+			fmt.Sprintf("# Github webhook Embed contents: (%s)", EmbedsString)
+			var ciSkip = strings.Contains(EmbedsString, "[CI-SKIP]")
 
-				if ( (strings.Contains(EmbedsString, " new commit ") && strings.Contains(EmbedsString, "TitaniumMC:master")) && !ciSkip ) {
-					if (githubnotiftest) {
-						githubPingChannelIDSend = githubPingChannelIDSendTest
-					}
-					s.ChannelMessageSend(githubPingChannelIDSend, githubPingMessage)
+			if (strings.Contains(EmbedsString, " new commit ") && strings.Contains(EmbedsString, "TitaniumMC:master")) && !ciSkip {
+				if githubnotiftest {
+					githubPingChannelIDSend = githubPingChannelIDSendTest
 				}
-				
+				s.ChannelMessageSend(githubPingChannelIDSend, githubPingMessage)
 			}
-			if strings.Contains(m.Content, "vm.tiktok.com") {
-				s.ChannelMessageDelete(m.ChannelID, m.ID)
-			}
+
+		}
+		if strings.Contains(m.Content, "vm.tiktok.com") {
+			s.ChannelMessageDelete(m.ChannelID, m.ID)
+		}
+		if m.Author.ID == owner_id {
 			if m.Author.ID == owner_id {
-				if m.Author.ID == owner_id {
-					if strings.HasPrefix(m.Content, "!bash") {
-						bashRun(s, m)
-					}
-		
-					switch m.Content {
-					case "!neofetch":
-						neofetch(s, m)
-		
-					case "!uptime":
-						uptime(s, m)
-		
-					case "!stop":
-						stopbot(s, m)
-		
-					case "!temps":
-						temps(s, m)
+				if strings.HasPrefix(m.Content, "!bash") {
+					bashRun(s, m)
+				}
 
-					case "!stock":
-						ltsmstock(s, m)
+				switch m.Content {
+				case "!neofetch":
+					neofetch(s, m)
 
-					default:
-						noPermsCmd(s, m, owner_id)
-					}
-				} else {
+				case "!uptime":
+					uptime(s, m)
+
+				case "!stop":
+					stopbot(s, m)
+
+				case "!temps":
+					temps(s, m)
+
+				case "!stock":
+					ltsmstock(s, m)
+
+				default:
 					noPermsCmd(s, m, owner_id)
 				}
 			} else {
 				noPermsCmd(s, m, owner_id)
 			}
+		} else {
+			noPermsCmd(s, m, owner_id)
+		}
 	}
-
-
-
 
 	// send message: s.ChannelMessageSend(m.ChannelID, message)
 	// delete message: s.ChannelMessageDelete(m.ChannelID, m.ID)
