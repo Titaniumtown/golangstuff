@@ -293,6 +293,10 @@ func noPermsCmd(s *discordgo.Session, m *discordgo.MessageCreate, owner_id strin
 	case "i cri":
 		fmt.Println("responding to 'i cri' with 'are you shaking and crying rn?'")
 		s.ChannelMessageSend(m.ChannelID, "are you shaking and crying rn?")
+	
+	case "based":
+		fmt.Println("responding to 'based' with 'on what?'")
+		s.ChannelMessageSend(m.ChannelID, "on what?")
 
 	default:
 		return
